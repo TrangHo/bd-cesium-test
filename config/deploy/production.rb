@@ -4,9 +4,9 @@
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-role :app, %w{deploy@104.131.141.98}
-role :web, %w{deploy@104.131.141.98}
-role :db,  %w{deploy@104.131.141.98}
+role :app, %w{deploy@107.170.195.188}
+role :web, %w{deploy@107.170.195.188}
+role :db,  %w{deploy@107.170.195.188}
 
 set :branch, 'master'
 set :rails_env, 'production'
@@ -20,7 +20,7 @@ set :deploy_to, '/home/deploy/bdcesium'
 # used to set extended properties on the server.
 
 set :unicorn_user, 'deploy'
-server '104.131.141.98', user: 'deploy', roles: %w{web app}
+server '107.170.195.188', user: 'deploy', roles: %w{web app}
 
 
 # Custom SSH Options
