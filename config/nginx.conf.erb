@@ -42,7 +42,7 @@ server {
     }
 
     # Set root to the shared directory.
-    root /home/deploy/BirdDog/shared/public;
+    root /home/deploy/bd-cesium/shared/public;
     if ($uri !~ ^/assets/) {
       rewrite ^(.*)$ /system/maintenance.html break;
     }
