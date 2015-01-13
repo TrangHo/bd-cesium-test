@@ -29,9 +29,7 @@ set :pty, true
 
 set :default_env, { path: "/usr/local/rvm/gems/ruby-2.1.1/bin:$PATH" }
 
-set :keep_releases, 5
-set :delayed_job_server_role, :worker
-set :delayed_job_args, "-n 2"
+set :keep_releases, 1
 
 namespace :deploy do
 

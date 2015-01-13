@@ -12,7 +12,6 @@ gem 'jbuilder', '~> 2.0'
 
 gem 'spring',        group: :development
 gem 'rails_12factor', group: :production
-gem 'requirejs-rails'
 
 group :development, :test do
   gem 'capistrano', '3.2.1'
