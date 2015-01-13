@@ -1,0 +1,21 @@
+development: &dev
+  adapter: postgresql
+  encoding: unicode
+  database: bd_cesium
+  host: localhost
+  pool: 5
+
+test: &test
+  <<: *dev
+  database: bd_cesium_test
+
+production:
+  <<: *dev
+  database: bd_cesium_production
+
+staging:
+  <<: *dev
+  database: bd_cesium_staging
+
+cucumber:
+  <<: *test
