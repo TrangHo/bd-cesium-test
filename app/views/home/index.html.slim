@@ -1,0 +1,63 @@
+#cesiumContainer
+  javascript:
+    function pickEntity(e) {
+        var picked = viewer.scene.pick(e.position);
+        if (picked) {
+            var id = Cesium.defaultValue(picked.id, picked.primitive.id);
+            if (id._polygon) {
+                return id;
+            }
+        }
+
+        return null;
+    }
+
+    Cesium.BingMapsApi.defaultKey = 'Ais-FVKaKLQgu-M4E7cMgmriPrReozu6QYviHXIkqOfwjxP8pscubLX5FyJADmm7';
+    var viewer = new Cesium.Viewer('cesiumContainer');
+    Cesium.viewerEntityMixin(viewer);
+    eventHelper = new Cesium.EventHelper();
+
+    //Seed the random number generator for repeatable results.
+    Cesium.Math.setRandomNumberSeed(0);
+
+    //Create a new GeoJSON data source and add it to the list.
+    var dataSource = new Cesium.GeoJsonDataSource();
+    viewer.dataSources.add(dataSource);
+
+    //Load the document into the data source and then set custom graphics
+    dataSource.loadUrl('/json_example.json').then(function() {
+      //Get the array of entities
+      var entities = dataSource.entities.entities;
+
+      var colorHash = {};
+      for (var i = 0; i < entities.length; i++) {
+        //For each entity, create a random color based on the state name.
+        //Some states have multiple entities, so we store the color in a
+        //hash so that we use the same color for the entire state.
+        var entity = entities[i];
+        var name = entity.name;
+        var color = colorHash[name];
+        if (!color) {
+          color = Cesium.Color.fromRandom({
+            alpha : 0.5
+          });
+          colorHash[name] = color;
+        }
+
+        //Set the polygon material to our random color.
+        entity.polygon.material = Cesium.ColorMaterialProperty.fromColor(color);
+        //Outline each polygon in black.
+        entity.polygon.outlineColor = new Cesium.ConstantProperty(Cesium.Color.LAVENDER);
+
+        //Extrude the polygon based on the state's population.  Each entity
+        //stores the properties for the GeoJSON feature it was created from
+        //Since the population is a huge number, we divide by 50.
+        entity.polygon.extrudedHeight = new Cesium.ConstantProperty(50.0);
+      }
+      viewer.screenSpaceEventHandler.setInputAction(function(e){ console.log(pickEntity(e)); }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      // Zoom to
+
+      viewer.scene.camera.flyTo({
+        destination : Cesium.Cartesian3.fromDegrees(-122.260445874971, 37.5081011345327, 3500.0)
+      });
+    });
