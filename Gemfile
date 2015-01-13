@@ -14,16 +14,17 @@ gem 'spring',        group: :development
 gem 'rails_12factor', group: :production
 gem 'requirejs-rails'
 
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+group :development, :test do
+  gem 'capistrano', '3.2.1'
+  gem 'capistrano-rvm'
+  gem 'capistrano-rails'
+  gem 'capistrano-bundler'
+  gem 'capistrano-maintenance', github: 'capistrano/maintenance', require: false
+  gem 'byebug'
+end
 
-# Use unicorn as the app server
-# gem 'unicorn'
+group :staging, :production do
+  gem 'unicorn'
+end
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
-# Use debugger
-# gem 'debugger', group: [:development, :test]
-
-ruby "2.1.5"
+ruby "2.1.1"

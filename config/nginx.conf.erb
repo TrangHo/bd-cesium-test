@@ -1,0 +1,50 @@
+upstream unicorn {
+  server unix:/tmp/unicorn.bdcesium.sock fail_timeout=0;
+}
+
+server {
+  listen 3000 default deferred;
+  root <%= app_root %>/public;
+
+  location ~ ^/assets/ {
+    expires 1y;
+    add_header Cache-Control public;
+
+    add_header ETag "";
+    break;
+  }
+
+  try_files $uri/index.html $uri @unicorn;
+  location @unicorn {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_redirect off;
+    proxy_pass http://unicorn;
+  }
+
+  error_page 500 502 504 /500.html;
+  error_page 404 /404.html;
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+
+  error_page 503 @503;
+
+  # Return a 503 error if the maintenance page exists.
+  if (-f /home/deploy/bd-cesium/shared/public/system/maintenance.html) {
+    return 503;
+  }
+
+  location @503 {
+    # Serve static assets if found.
+    if (-f $request_filename) {
+      break;
+    }
+
+    # Set root to the shared directory.
+    root /home/deploy/BirdDog/shared/public;
+    if ($uri !~ ^/assets/) {
+      rewrite ^(.*)$ /system/maintenance.html break;
+    }
+  }
+}
