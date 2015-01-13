@@ -74,6 +74,17 @@ namespace :deploy do
     end
   end
 
+  task :precompile_assets do
+    on roles(:app), except: { no_release: true } do
+      within "#{release_path}" do
+        with RAILS_ENV: fetch(:rails_env) do
+          execute :bundle, :exec, :rake, 'assets:clean'
+          execute :bundle, :exec, :rake, 'assets:precompile'
+        end
+      end
+    end
+  end
+
   after :publishing, :restart
   after :updating, :setup_config
   after :updating, :symlink_config
